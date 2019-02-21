@@ -3,19 +3,39 @@ package com.nerdyyy.dotfilesgen;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     private ObjectProperty<IDotFileGenerator> currentGenerator = new SimpleObjectProperty<>();
+
+    private Node createSpacer() {
+        final Region spacer = new Region();
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        return spacer;
+    }
+
+    private void AddTypeLabels(VBox vb) {
+        vb.setPadding(new Insets(20));
+        Button gitignore = new Button(".gitignore");
+        gitignore.prefWidthProperty().bind(vb.widthProperty());
+        gitignore.setOnAction(event -> currentGenerator.setValue(new gitignore()));
+
+
+
+
+
+        vb.getChildren().addAll(createSpacer(), gitignore, createSpacer());
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -36,9 +56,11 @@ public class Main extends Application {
 
         sp.prefWidthProperty().bind(root.widthProperty().divide(3).multiply(2));
         root.add(sp, 0, 0, 1, 1);
-        FlowPane fp = new FlowPane();
-        fp.prefWidthProperty().bind(root.widthProperty().divide(3));
-        root.add(fp, 1, 0, 2, 1);
+        VBox filetypes = new VBox();
+        filetypes.prefWidthProperty().bind(root.widthProperty().divide(3));
+        filetypes.prefHeightProperty().bind(root.heightProperty());
+        AddTypeLabels(filetypes);
+        root.add(filetypes, 1, 0, 2, 1);
 
 
         Scene sc = new Scene(root, 640, 480);
@@ -52,7 +74,7 @@ public class Main extends Application {
                     ((VBox)tmp).prefWidthProperty().bind(sc.widthProperty());
                     sp.setContent(tmp);
                 });
-        currentGenerator.setValue(new gitignore());
+        //currentGenerator.setValue(new gitignore());
 
         primaryStage.show();
     }
